@@ -11,7 +11,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_pinecone import PineconeVectorStore
 from pinecone import ServerlessSpec, Pinecone
 
-from utils.model_loader import ModelLoader
+from utils.model_loaders import ModelLoader
 from utils.config_loader import load_config
 from exception.exceptions import TradingBotException
 from custom_logging.logging import logger
