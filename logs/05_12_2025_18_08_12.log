@@ -1,0 +1,3 @@
+[ 2025-05-12 18:08:13,042 ] 16 my_agentic_app - INFO - initialized ModelLoader
+[ 2025-05-12 18:08:13,043 ] 26 my_agentic_app - INFO - validating enviroment variables
+[ 2025-05-12 18:08:13,043 ] 33 my_agentic_app - ERROR - Error validating enviroment variables

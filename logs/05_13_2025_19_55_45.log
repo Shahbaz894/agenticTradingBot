@@ -1,0 +1,3 @@
+[ 2025-05-13 19:55:45,986 ] 19 my_agentic_app - INFO - ModelLoader initialized successfully.
+[ 2025-05-13 19:55:45,988 ] 79 my_agentic_app - INFO - TavilySearchResults tool initialized with max_results=5
+[ 2025-05-13 19:55:45,989 ] 83 my_agentic_app - INFO - PolygonFinancials tool initialized using Polygon API

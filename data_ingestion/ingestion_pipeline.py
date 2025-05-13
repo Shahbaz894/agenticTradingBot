@@ -1,46 +1,41 @@
 import os
-import sys
 import tempfile
 from typing import List
-from uuid import uuid4
-
 from dotenv import load_dotenv
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_pinecone import PineconeVectorStore
-from pinecone import ServerlessSpec, Pinecone
-
 from utils.model_loader import ModelLoader
 from utils.config_loader import load_config
-from exception.exceptions import TradingBotException
+from pinecone import ServerlessSpec, Pinecone
 from custom_logging.logging import logger
-
+from uuid import uuid4
+import sys
+from exception.exceptions import TradingBotException
 
 class DataIngestion:
     """
-    Handles loading, splitting, and storing documents into Pinecone vector store.
+    Class to handle document loading, transformation, and ingestion into the Pinecone vector store.
     """
 
     def __init__(self):
         try:
-            logger.info("Initializing DataIngestion...")
-            self.model_loader = ModelLoader()  # Load the embedding model
-            self._load_env_variables()         # Load required environment variables
-            self.config = load_config()        # Load application config
-            logger.info("DataIngestion initialized successfully.")
+            logger.info("Initializing DataIngestion pipeline...")
+            self.model_loader = ModelLoader()
+            self._load_env_variables()
+            self.config = load_config()
+            logger.info("DataIngestion pipeline initialized successfully.")
         except Exception as e:
-            logger.error("Error during initialization of DataIngestion.")
+            logger.error("Failed to initialize DataIngestion pipeline.")
             raise TradingBotException(e, sys)
 
     def _load_env_variables(self):
         """
-        Loads and validates required environment variables from a .env file.
+        Load and validate environment variables required for ingestion.
         """
         try:
-            logger.info("Loading environment variables...")
             load_dotenv()
-
             required_vars = ["GOOGLE_API_KEY", "PINECONE_API_KEY"]
             missing_vars = [var for var in required_vars if os.getenv(var) is None]
 
@@ -56,86 +51,90 @@ class DataIngestion:
 
     def load_documents(self, uploaded_files) -> List[Document]:
         """
-        Loads documents from uploaded files and converts them to LangChain Document objects.
+        Load and parse uploaded files into LangChain Document objects.
         """
         try:
-            logger.info("Starting document loading...")
             documents = []
-
             for uploaded_file in uploaded_files:
                 file_ext = os.path.splitext(uploaded_file.filename)[1].lower()
-                suffix = file_ext if file_ext in ['.pdf', '.docx'] else ".tmp"
+                suffix = file_ext if file_ext in [".pdf", ".docx"] else ".tmp"
 
-                # Write uploaded file to temporary file
                 with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
-                    temp_file.write(uploaded_file.read())
+                    temp_file.write(uploaded_file.file.read())
                     temp_path = temp_file.name
 
-                # Load content using appropriate loader
-                if file_ext == '.pdf':
+                if file_ext == ".pdf":
+                    logger.info(f"Loading PDF file: {uploaded_file.filename}")
                     loader = PyPDFLoader(temp_path)
                     documents.extend(loader.load())
-                    logger.info(f"Loaded PDF file: {uploaded_file.filename}")
-                elif file_ext == '.docx':
+                elif file_ext == ".docx":
+                    logger.info(f"Loading DOCX file: {uploaded_file.filename}")
                     loader = Docx2txtLoader(temp_path)
                     documents.extend(loader.load())
-                    logger.info(f"Loaded DOCX file: {uploaded_file.filename}")
                 else:
-                    logger.warning(f"Unsupported file type: {uploaded_file.filename}")
-
-            logger.info(f"Loaded {len(documents)} documents.")
+                    logger.warning(f"Unsupported file type skipped: {uploaded_file.filename}")
+            logger.info(f"Total documents loaded: {len(documents)}")
             return documents
         except Exception as e:
-            logger.error("Error during document loading.")
+            logger.error("Failed to load documents.")
             raise TradingBotException(e, sys)
 
     def store_in_vector_db(self, documents: List[Document]):
         """
-        Splits documents and stores them in the Pinecone vector database.
+        Split documents and store embeddings in Pinecone vector store.
         """
         try:
-            logger.info("Starting document ingestion to Pinecone...")
-
-            # Split documents into chunks
+            logger.info("Splitting documents for ingestion...")
             text_splitter = RecursiveCharacterTextSplitter(
                 chunk_size=1000,
                 chunk_overlap=200,
                 length_function=len
             )
             documents = text_splitter.split_documents(documents)
-            logger.info(f"Documents split into {len(documents)} chunks.")
+            logger.info(f"Total document chunks created: {len(documents)}")
 
-            # Initialize Pinecone client
+            logger.info("Connecting to Pinecone...")
             pinecone_client = Pinecone(api_key=self.pinecone_api_key)
             index_name = self.config["vector_db"]["index_name"]
 
-            # Create index if it doesn't exist
+            # Create index if not exists
             if index_name not in [i.name for i in pinecone_client.list_indexes()]:
-                logger.info(f"Creating new index: {index_name}")
+                logger.info(f"Creating new Pinecone index: {index_name}")
                 pinecone_client.create_index(
                     name=index_name,
-                    dimension=786,
-                    metric='cosine',
+                    dimension=768,  # Adjust based on embedding model
+                    metric="cosine",
                     spec=ServerlessSpec(cloud="aws", region="us-east-1"),
                 )
             else:
-                logger.info(f"Using existing index: {index_name}")
+                logger.info(f"Pinecone index '{index_name}' already exists.")
 
-            # Get Pinecone index
             index = pinecone_client.Index(index_name)
+            vector_store = PineconeVectorStore(index=index, embedding=self.model_loader.load_embeddings())
 
-            # Load embeddings model
-            embeddings = self.model_loader.load_embeddings()
-
-            # Create Pinecone vector store
-            vector_store = PineconeVectorStore(index=index, embedding=embeddings)
-
-            # Generate UUIDs for each document
             uuids = [str(uuid4()) for _ in range(len(documents))]
-
-            # Add documents to Pinecone
+            logger.info("Adding documents to Pinecone vector store...")
             vector_store.add_documents(documents=documents, ids=uuids)
-            logger.info(f"{len(documents)} documents successfully ingested into Pinecone.")
+            logger.info("Documents successfully ingested into Pinecone.")
         except Exception as e:
-            logger.error("Error during storing documents in Pinecone.")
+            logger.error("Failed to store documents in vector database.")
             raise TradingBotException(e, sys)
+
+    def run_pipeline(self, uploaded_files):
+        """
+        Execute the full ingestion pipeline: load, split, and store.
+        """
+        try:
+            logger.info("Running data ingestion pipeline...")
+            documents = self.load_documents(uploaded_files)
+            if not documents:
+                logger.warning("No valid documents found for ingestion.")
+                return
+            self.store_in_vector_db(documents)
+            logger.info("Data ingestion pipeline completed successfully.")
+        except Exception as e:
+            logger.error("Data ingestion pipeline failed.")
+            raise TradingBotException(e, sys)
+
+if __name__ == '__main__':
+    pass

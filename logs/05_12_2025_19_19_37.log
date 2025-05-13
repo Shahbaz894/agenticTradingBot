@@ -1,0 +1,21 @@
+[ 2025-05-12 19:19:37,291 ] 19 my_agentic_app - INFO - ModelLoader initialized successfully.
+[ 2025-05-12 19:19:37,292 ] 79 my_agentic_app - INFO - TavilySearchResults tool initialized with max_results=5
+[ 2025-05-12 19:19:37,292 ] 83 my_agentic_app - INFO - PolygonFinancials tool initialized using Polygon API
+[ 2025-05-12 19:20:03,385 ] 46 my_agentic_app - INFO - Received query: whats is gold price
+[ 2025-05-12 19:20:03,387 ] 17 my_agentic_app - INFO - Initializing GraphBuilder...
+[ 2025-05-12 19:20:03,392 ] 19 my_agentic_app - INFO - ModelLoader initialized successfully.
+[ 2025-05-12 19:20:03,392 ] 54 my_agentic_app - INFO - Loading Groq LLM: deepseek-r1-distill-llama-70b
+[ 2025-05-12 19:20:04,109 ] 56 my_agentic_app - INFO - Groq LLM initialized successfully.
+[ 2025-05-12 19:20:04,160 ] 22 my_agentic_app - INFO - Binding tools to LLM...
+[ 2025-05-12 19:20:04,235 ] 27 my_agentic_app - INFO - GraphBuilder initialized.
+[ 2025-05-12 19:20:04,235 ] 40 my_agentic_app - INFO - Building LangGraph...
+[ 2025-05-12 19:20:04,235 ] 69 my_agentic_app - ERROR - Error during chatbot query: Must provide state_schema or input and output
+Traceback (most recent call last):
+  File "E:\agenticTradingBot\main.py", line 50, in query_chatbot
+    graph_service.build()
+  File "E:\agenticTradingBot\agent\workflow.py", line 41, in build
+    graph_builder = StateGraph()
+                    ^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langgraph\graph\state.py", line 180, in __init__
+    raise ValueError("Must provide state_schema or input and output")
+ValueError: Must provide state_schema or input and output

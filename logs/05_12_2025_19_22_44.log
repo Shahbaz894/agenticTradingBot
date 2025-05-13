@@ -1,0 +1,4 @@
+[ 2025-05-12 19:22:44,398 ] 88 my_agentic_app - INFO - User asked: gold price in pakistan
+[ 2025-05-12 19:22:47,389 ] 104 my_agentic_app - ERROR - Bot response failed with status 500: {"error":"Must provide state_schema or input and output"}
+[ 2025-05-12 19:29:32,727 ] 88 my_agentic_app - INFO - User asked: gold price in us
+[ 2025-05-12 19:29:56,047 ] 104 my_agentic_app - ERROR - Bot response failed with status 500: {"error":"Error code: 413 - {'error': {'message': 'Request too large for model `deepseek-r1-distill-llama-70b` in organization `org_01jcb56sg2fb3vartmbkc6hpsn` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 44129, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"}

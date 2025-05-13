@@ -1,0 +1,99 @@
+[ 2025-05-12 19:29:14,146 ] 19 my_agentic_app - INFO - ModelLoader initialized successfully.
+[ 2025-05-12 19:29:14,147 ] 79 my_agentic_app - INFO - TavilySearchResults tool initialized with max_results=5
+[ 2025-05-12 19:29:14,147 ] 83 my_agentic_app - INFO - PolygonFinancials tool initialized using Polygon API
+[ 2025-05-12 19:29:34,786 ] 46 my_agentic_app - INFO - Received query: gold price in us
+[ 2025-05-12 19:29:34,787 ] 17 my_agentic_app - INFO - Initializing GraphBuilder...
+[ 2025-05-12 19:29:34,795 ] 19 my_agentic_app - INFO - ModelLoader initialized successfully.
+[ 2025-05-12 19:29:34,795 ] 54 my_agentic_app - INFO - Loading Groq LLM: deepseek-r1-distill-llama-70b
+[ 2025-05-12 19:29:35,577 ] 56 my_agentic_app - INFO - Groq LLM initialized successfully.
+[ 2025-05-12 19:29:35,578 ] 20 my_agentic_app - INFO - LLM loaded successfully.
+[ 2025-05-12 19:29:35,578 ] 24 my_agentic_app - INFO - Tools loaded: ['retriever_tool', 'polygon_financials', 'tavily_search_results_json']
+[ 2025-05-12 19:29:35,646 ] 28 my_agentic_app - INFO - LLM successfully bound with tools.
+[ 2025-05-12 19:29:35,646 ] 50 my_agentic_app - INFO - Building graph...
+[ 2025-05-12 19:29:35,647 ] 55 my_agentic_app - INFO - Chatbot node added to graph.
+[ 2025-05-12 19:29:35,647 ] 60 my_agentic_app - INFO - Tool node added to graph.
+[ 2025-05-12 19:29:35,648 ] 64 my_agentic_app - INFO - Conditional edges from chatbot to tools added.
+[ 2025-05-12 19:29:35,654 ] 74 my_agentic_app - INFO - Graph successfully compiled.
+[ 2025-05-12 19:29:35,654 ] 83 my_agentic_app - INFO - Graph retrieved successfully.
+[ 2025-05-12 19:29:35,654 ] 56 my_agentic_app - INFO - Invoking graph with message: {'messages': ['gold price in us']}
+[ 2025-05-12 19:29:37,986 ] 1025 httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+[ 2025-05-12 19:29:55,874 ] 1025 httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 413 Payload Too Large"
+[ 2025-05-12 19:29:55,876 ] 43 my_agentic_app - ERROR - Error in chatbot node.
+Traceback (most recent call last):
+  File "E:\agenticTradingBot\agent\workflow.py", line 39, in _chatbot_node
+    result = self.llm_with_tools.invoke(state["messages"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_core\runnables\base.py", line 5416, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 370, in invoke
+    self.generate_prompt(
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 947, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 766, in generate
+    self._generate_with_cache(
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1012, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_groq\chat_models.py", line 498, in _generate
+    response = self.client.create(messages=message_dicts, **params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\groq\resources\chat\completions.py", line 355, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\groq\_base_client.py", line 1222, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\groq\_base_client.py", line 1031, in request
+    raise self._make_status_error_from_response(err.response) from None
+groq.APIStatusError: Error code: 413 - {'error': {'message': 'Request too large for model `deepseek-r1-distill-llama-70b` in organization `org_01jcb56sg2fb3vartmbkc6hpsn` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 44129, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+[ 2025-05-12 19:29:55,942 ] 69 my_agentic_app - ERROR - Error during chatbot query: Error code: 413 - {'error': {'message': 'Request too large for model `deepseek-r1-distill-llama-70b` in organization `org_01jcb56sg2fb3vartmbkc6hpsn` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 44129, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Traceback (most recent call last):
+  File "E:\agenticTradingBot\main.py", line 57, in query_chatbot
+    result = graph.invoke(messages)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langgraph\pregel\__init__.py", line 2823, in invoke
+    for chunk in self.stream(
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langgraph\pregel\__init__.py", line 2461, in stream
+    for _ in runner.tick(
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langgraph\pregel\runner.py", line 153, in tick
+    run_with_retry(
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langgraph\pregel\retry.py", line 40, in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langgraph\utils\runnable.py", line 623, in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langgraph\utils\runnable.py", line 377, in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\agent\workflow.py", line 39, in _chatbot_node
+    result = self.llm_with_tools.invoke(state["messages"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_core\runnables\base.py", line 5416, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 370, in invoke
+    self.generate_prompt(
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 947, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 766, in generate
+    self._generate_with_cache(
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1012, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\langchain_groq\chat_models.py", line 498, in _generate
+    response = self.client.create(messages=message_dicts, **params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\groq\resources\chat\completions.py", line 355, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\groq\_base_client.py", line 1222, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\agenticTradingBot\venv\Lib\site-packages\groq\_base_client.py", line 1031, in request
+    raise self._make_status_error_from_response(err.response) from None
+groq.APIStatusError: Error code: 413 - {'error': {'message': 'Request too large for model `deepseek-r1-distill-llama-70b` in organization `org_01jcb56sg2fb3vartmbkc6hpsn` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 44129, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+During task with name 'chatbot' and id '2f028095-bb6b-b8a7-aa79-f97383f975ea'

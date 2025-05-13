@@ -1,0 +1,13 @@
+[ 2025-05-12 19:05:33,945 ] 19 my_agentic_app - INFO - ModelLoader initialized successfully.
+[ 2025-05-12 19:05:33,947 ] 74 my_agentic_app - INFO - TavilySearchResults tool initialized.
+[ 2025-05-12 19:05:33,947 ] 79 my_agentic_app - INFO - PolygonFinancials tool initialized.
+[ 2025-05-12 19:05:46,807 ] 19 my_agentic_app - INFO - ModelLoader initialized successfully.
+[ 2025-05-12 19:05:59,351 ] 40 my_agentic_app - INFO - Loading embedding model: models/text-embedding-004
+[ 2025-05-12 19:05:59,491 ] 42 my_agentic_app - INFO - Embedding model loaded successfully.
+[ 2025-05-12 19:06:59,778 ] 17 my_agentic_app - INFO - Initializing GraphBuilder...
+[ 2025-05-12 19:06:59,784 ] 19 my_agentic_app - INFO - ModelLoader initialized successfully.
+[ 2025-05-12 19:06:59,835 ] 54 my_agentic_app - INFO - Loading Groq LLM: deepseek-r1-distill-llama-70b
+[ 2025-05-12 19:07:00,569 ] 56 my_agentic_app - INFO - Groq LLM initialized successfully.
+[ 2025-05-12 19:07:00,570 ] 22 my_agentic_app - INFO - Binding tools to LLM...
+[ 2025-05-12 19:07:00,580 ] 27 my_agentic_app - INFO - GraphBuilder initialized.
+[ 2025-05-12 19:07:00,581 ] 40 my_agentic_app - INFO - Building LangGraph...

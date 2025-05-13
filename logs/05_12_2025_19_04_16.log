@@ -1,0 +1,10 @@
+[ 2025-05-12 19:04:16,437 ] 19 my_agentic_app - INFO - ModelLoader initialized successfully.
+[ 2025-05-12 19:04:16,438 ] 74 my_agentic_app - INFO - TavilySearchResults tool initialized.
+[ 2025-05-12 19:04:16,439 ] 79 my_agentic_app - INFO - PolygonFinancials tool initialized.
+[ 2025-05-12 19:04:27,355 ] 27 my_agentic_app - INFO - Initializing DataIngestion...
+[ 2025-05-12 19:04:27,360 ] 19 my_agentic_app - INFO - ModelLoader initialized successfully.
+[ 2025-05-12 19:04:27,361 ] 41 my_agentic_app - INFO - Loading environment variables...
+[ 2025-05-12 19:04:27,362 ] 52 my_agentic_app - INFO - Environment variables loaded successfully.
+[ 2025-05-12 19:04:27,366 ] 31 my_agentic_app - INFO - DataIngestion initialized successfully.
+[ 2025-05-12 19:04:27,429 ] 62 my_agentic_app - INFO - Starting document loading...
+[ 2025-05-12 19:04:27,431 ] 89 my_agentic_app - ERROR - Error during document loading.
